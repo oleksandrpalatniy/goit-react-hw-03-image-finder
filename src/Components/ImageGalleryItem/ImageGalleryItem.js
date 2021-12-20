@@ -1,31 +1,14 @@
 import { Component } from 'react';
 import styles from './imageGalleryItem.module.css';
-import fetchAPI from '../Fetch/Fetch';
+
 import Modal from '../Modal/Modal';
-import LoaderSpinner from '../Loader/Loader';
 
 export default class ImageGalleryItem extends Component {
   state = {
-    imageListArr: [],
     showModal: false,
     largeImageURL: '',
     largeImageTags: '',
-    error: '',
-    spinner: false,
   };
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevProps.imageName !== this.props.imageName ||
-      prevProps.imagePage !== this.props.imagePage
-    ) {
-      this.setState({ spinner: true });
-      fetchAPI
-        .fetchImage(this.props.imageName, this.props.imagePage)
-        .then(imageList => this.setState({ imageListArr: imageList.hits }))
-        .catch(() => alert('dsgs'))
-        .finally(() => this.setState({ spinner: false }));
-    }
-  }
   handleImageItemClick = e => {
     this.setState({ largeImageURL: e.item.largeImageURL });
     this.setState({ largeImageTags: e.item.tags });
@@ -37,13 +20,10 @@ export default class ImageGalleryItem extends Component {
   };
 
   render() {
-    const { imageListArr, spinner, largeImageURL, largeImageTags, showModal } =
-      this.state;
+    const { largeImageURL, largeImageTags, showModal } = this.state;
     return (
       <>
-        {imageListArr.length > 0}
-        {spinner && <LoaderSpinner />}
-        {imageListArr.map(item => (
+        {this.props.imageListArr.map(item => (
           <li
             key={item.id}
             className={styles.ImageGalleryItem}
