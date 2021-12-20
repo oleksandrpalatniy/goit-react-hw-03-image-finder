@@ -8,6 +8,8 @@ export default class App extends Component {
     imageName: '',
     imagePage: 1,
     largeItemUrl: '',
+    showModal: false,
+    currentImage: {},
   };
 
   handleFormSubmit = (imageName, imagePage) => {

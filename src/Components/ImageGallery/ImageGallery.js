@@ -3,12 +3,15 @@ import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import styles from './imageGallery.module.css';
 import fetchAPI from '../Fetch/Fetch';
 import LoaderSpinner from '../Loader/Loader';
-
+import Modal from '../Modal/Modal';
 export default class ImageGallery extends Component {
   state = {
     imageListArr: [],
     error: '',
     spinner: false,
+    showModal: false,
+    largeImageURL: '',
+    largeImageTags: '',
   };
   componentDidUpdate(prevProps, prevState) {
     if (
@@ -23,23 +26,39 @@ export default class ImageGallery extends Component {
         .finally(() => this.setState({ spinner: false }));
     }
   }
-  handleImageItemClick = e => {
-    this.setState({ largeImageURL: e.item.largeImageURL });
-    this.setState({ largeImageTags: e.item.tags });
-  };
-  toggleModal = () => {
+
+  closeModal = () => {
     this.setState(state => ({
       showModal: !state.showModal,
     }));
   };
+  toggleModal = item => {
+    this.setState(state => ({
+      showModal: !state.showModal,
+
+      largeImageURL: item.largeImageURL,
+      largeImageTags: item.tags,
+    }));
+  };
+
   render() {
     const { imageListArr, spinner } = this.state;
     return (
       <>
         {spinner && <LoaderSpinner />}
         <ul className={styles.ImageGallery}>
-          <ImageGalleryItem imageListArr={imageListArr} />
+          <ImageGalleryItem
+            imageListArr={imageListArr}
+            onOpenModal={this.toggleModal}
+          />
         </ul>
+        {this.state.showModal && (
+          <Modal
+            onClose={this.closeModal}
+            largeUrl={this.state.largeImageURL}
+            tag={this.state.largeImageTags}
+          ></Modal>
+        )}
       </>
     );
   }
